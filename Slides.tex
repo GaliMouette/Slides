@@ -1,0 +1,179 @@
+\documentclass[french,usepdftitle=false,compress]{beamer}
+
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\mode<presentation>
+{
+  \usetheme{Dresden}
+  \usecolortheme{crane}
+  \setbeamercovered{transparent}
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{footline}[frame number]
+}
+
+\title
+{
+  Application spontanée de transformations logiques en assistance au raisonnement automatique
+}
+
+\subtitle
+{
+  Stage de L3
+}
+
+\author[Alexis~CARRÉ]
+{
+  Alexis~CARRÉ \inst{1}\\[1em]
+  {
+    \tiny
+    Sous la direction de :\\[-0.5em]
+    Chantal~KELLER \inst{2} \hspace{1em} Louise~DUBOIS~DE~PRISQUE \inst{2}
+  }
+}
+
+\institute[École Normale Supérieure de Lyon et Université Paris Saclay]
+{
+  \inst{1}
+  École Normale Supérieure de Lyon
+  \and
+  \inst{2}
+  Laboratoire Méthodes Formelles\\
+  Université Paris Saclay
+}
+
+\date
+{
+  4 septembre 2023 : Soutenance
+}
+
+\begin{document}
+
+\begin{frame}[noframenumbering, plain]
+  \titlepage
+\end{frame}
+
+\section{Introduction}
+
+\subsection{Les assistants de preuve}
+
+\begin{frame}{La preuve formelle}
+  \begin{block}{}
+    \begin{itemize}
+      \item Une démonstration rigoureuse et systématique
+      \item Des axiomes et une suite d'étapes logiques
+    \end{itemize}
+  \end{block}
+
+  \begin{exampleblock}{}
+    \begin{itemize}
+      \item Grande confiance dans la validité de la preuve
+      \item Peut être vérifiée par un ordinateur
+    \end{itemize}
+  \end{exampleblock}
+
+  \begin{alertblock}{}
+    \begin{itemize}
+      \item Processus souvent long et sujet à erreurs
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Un assistant de preuve}
+  \begin{block}{}
+    \begin{itemize}
+      \item Un logiciel pour manipuler les preuves formelles
+      \item Coq, Isabelle, Agda, Lean, \dots
+      \item Interaction Homme-Machine
+    \end{itemize}
+  \end{block}
+
+  \begin{exampleblock}{}
+    \begin{itemize}
+      \item Facilite la création d'une preuve
+      \item Permet de vérifier sa validité
+    \end{itemize}
+  \end{exampleblock}
+
+  \begin{alertblock}{}
+    \begin{itemize}
+      \item Pas de construction automatique de preuve
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\subsection{Automatisation et solveur SMT}
+\begin{frame}{Automatisation}
+  \begin{exampleblock}{}
+    \begin{itemize}
+      \item Gagner du temps
+      \item Rendre les assistants de preuve plus accessibles
+    \end{itemize}
+  \end{exampleblock}
+
+  \begin{block}<2>{Le cas du solveur SMT}
+    \begin{itemize}
+      \item Logiciel à part entière
+      \item Permet de résoudre des problèmes de satisfiabilité
+      \item Accepte des formules logiques
+      \item Renvoie \texttt{SAT} ou \texttt{UNSAT}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Un problème de communication}
+  \begin{alertblock}{Des logiques différentes :}
+    \begin{itemize}
+      \item Assistant Coq : Calcul des constructions inductives
+      \item Solveurs SMT : Logique du 1\ier{} ordre
+    \end{itemize}
+  \end{alertblock}
+
+  \begin{exampleblock}{Du progrès, des tactiques de traduction :}
+    \begin{thebibliography}{10}
+      \beamertemplatearticlebibitems
+      \bibitem{DBLP:conf/cpp/Blot0CPKMV23}
+      L. D. de Prisque, C. Keller, V. Blot, \dots
+      \newblock Compositional Pre-processing for Automated Reasoning in Dependent Type Theory
+      \newblock CCP 2023.
+    \end{thebibliography}
+  \end{exampleblock}
+\end{frame}
+
+\subsection{Objectifs du stage}
+\begin{frame}{Objectifs du stage}
+  \begin{block}{Une traduction encore manuelle}
+    \begin{itemize}
+      \item Des tactiques pas toujours applicables
+      \item Une solution : laisser l'utilisateur les appliquer
+    \end{itemize}
+  \end{block}
+
+  \begin{exampleblock}{Vers l'automatisation de la traduction}
+    \begin{itemize}
+      \item Détecter les formules traduisibles
+      \item Appliquer automatiquement les tactiques de traduction
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\section{Contribution}
+
+% \subsection{Un langage de spécification}
+
+% \begin{frame}{}
+% \end{frame}
+
+% \subsection{Un interpréteur}
+
+% \begin{frame}{}
+% \end{frame}
+
+\section*{Conclusion}
+
+\begin{frame}{Conclusion}
+  % Keep the summary *very short*.
+\end{frame}
+
+\end{document}
