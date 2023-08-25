@@ -4,11 +4,15 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
+\usepackage{minted}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+
 \mode<presentation>
 {
   \usetheme{Dresden}
   \usecolortheme{crane}
-  \setbeamercovered{transparent}
   \setbeamertemplate{navigation symbols}{}
   \setbeamertemplate{footline}[frame number]
 }
@@ -47,6 +51,23 @@
 {
   4 septembre 2023 : Soutenance
 }
+
+% Structuring a talk is a difficult task and the following structure
+% may not be suitable. Here are some rules that apply for this
+% solution:
+
+% - Exactly two or three sections (other than the summary).
+% - At *most* three subsections per section.
+% - Talk about 30s to 2min per frame. So there should be between about
+%   15 and 30 frames, all told.
+
+% - A conference audience is likely to know very little of what you
+%   are going to talk about. So *simplify*!
+% - In a 20min talk, getting the main ideas across is hard
+%   enough. Leave out details, even if it means being less precise than
+%   you think necessary.
+% - If you omit details that are vital to the proof/implementation,
+%   just say so once. Everybody will be happy with that.
 
 \begin{document}
 
@@ -103,6 +124,27 @@
   \end{alertblock}
 \end{frame}
 
+\begin{frame}{Exemple : $x + 0 = x$}
+  \inputminted{coq}{basic.v}
+\end{frame}
+
+\begin{frame}{Un peu d'architecture}
+  \begin{block}{Les tactiques :}
+    \begin{itemize}
+      \item Manipulent les preuves
+      \item Appliquées par l'utilisateur
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Le noyau :}
+    \begin{itemize}
+      \item Vérifie la validité des preuves
+      \item Ne fait pas de raisonnement
+      \item \textbf{Inépendant du reste}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
 \subsection{Automatisation et solveur SMT}
 \begin{frame}{Automatisation}
   \begin{exampleblock}{}
@@ -111,16 +153,65 @@
       \item Rendre les assistants de preuve plus accessibles
     \end{itemize}
   \end{exampleblock}
+  \vfill
+  \pause
+  \inputminted{coq}{basic_lia.v}
+\end{frame}
 
-  \begin{block}<2>{Le cas du solveur SMT}
+\begin{frame}{Toujours plus d'automatisation}
+  \begin{block}{Le cas du solveur SMT}
     \begin{itemize}
       \item Logiciel à part entière
-      \item Permet de résoudre des problèmes de satisfiabilité
-      \item Accepte des formules logiques
+      \item Permet de résoudre des problèmes de décision
+      \item Reçois une formule logique et des contraintes
       \item Renvoie \texttt{SAT} ou \texttt{UNSAT}
     \end{itemize}
   \end{block}
+
+  \begin{block}{Exemple de formule :}
+    \begin{math}
+      sorted(t,i,j) = \forall i',j'. i \leq i' \land i' \leq j' \land j' \leq j \Rightarrow t[i'] \leq t[j']
+    \end{math}
+  \end{block}
 \end{frame}
+
+\begin{frame}{Encore un peu d'architecture}
+  \begin{block}{Du point du vue du solveur SMT}
+    \center
+    \begin{tikzpicture}
+      \node[rectangle] (forall) at (0,0) {$\forall i',j'.$};
+      \node[rectangle] (a) [right=0 of forall] {$i \leq i'$};
+      \node[rectangle] (and1) [right=0 of a] {$\land$};
+      \node[rectangle] (b) [right=0 of and1] {$i' \leq j'$};
+      \node[rectangle] (and2) [right=0 of b] {$\land$};
+      \node[rectangle] (c) [right=0 of and2] {$j' \leq j$};
+      \node[rectangle] (imply) [right=0 of c] {$\Rightarrow$};
+      \node[rectangle] (d) [right=0 of imply] {$t[i'] \leq t[j']$};
+
+      \onslide<2->{
+        \node[rectangle,fill=blue!20] (forall) at (0,0) {$\forall i',j'.$};
+        \node[rectangle,fill=blue!20,minimum width=1em,minimum height=1em,draw=black] (Blue) [below=0.5 of forall] {};
+        \node (BlueText) [right=0 of Blue] {Instantiation};
+      }
+      \onslide<3->{
+        \node[rectangle,fill=red!20] (and1) [right=0 of a] {$\land$};
+        \node[rectangle,fill=red!20] (and2) [right=0 of b] {$\land$};
+        \node[rectangle,fill=red!20] (imply) [right=0 of c] {$\Rightarrow$};
+        \node[rectangle,fill=red!20,minimum width=1em,minimum height=1em,draw=black] (Red) [below=0.25 of Blue] {};
+        \node (RedText) [right=0 of Red] {Logique};
+      }
+      \onslide<4->{
+        \node[rectangle,fill=green!20] (a) [right=0 of forall] {$i \leq i'$};
+        \node[rectangle,fill=green!20] (b) [right=0 of and1] {$i' \leq j'$};
+        \node[rectangle,fill=green!20] (c) [right=0 of and2] {$j' \leq j$};
+        \node[rectangle,fill=green!20] (d) [right=0 of imply] {$t[i'] \leq t[j']$};
+        \node[rectangle,fill=green!20,minimum width=1em,minimum height=1em,draw=black] (Green) [below=0.25 of Red] {};
+        \node (GreenText) [right=0 of Green] {Théorie};
+      }
+    \end{tikzpicture}
+  \end{block}
+\end{frame}
+
 
 \begin{frame}{Un problème de communication}
   \begin{alertblock}{Des logiques différentes :}
@@ -169,6 +260,8 @@
 
 % \begin{frame}{}
 % \end{frame}
+
+% \Autres contributions
 
 \section*{Conclusion}
 

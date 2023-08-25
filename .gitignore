@@ -4,3 +4,4 @@
 # But not
 !*.tex
 !.gitignore
+!*.v
