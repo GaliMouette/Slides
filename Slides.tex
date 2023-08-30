@@ -7,7 +7,7 @@
 \usepackage{minted}
 
 \usepackage{tikz}
-\usetikzlibrary{positioning}
+\usetikzlibrary{positioning,fit}
 
 \mode<presentation>
 {
@@ -113,7 +113,7 @@
   \begin{exampleblock}{}
     \begin{itemize}
       \item Facilite la création d'une preuve
-      \item Permet de vérifier sa validité
+      \item Permet de vérifier automatiquement la validité d'une preuve
     \end{itemize}
   \end{exampleblock}
 
@@ -129,19 +129,39 @@
 \end{frame}
 
 \begin{frame}{Un peu d'architecture}
-  \begin{block}{Les tactiques :}
-    \begin{itemize}
-      \item Manipulent les preuves
-      \item Appliquées par l'utilisateur
-    \end{itemize}
-  \end{block}
+  \begin{center}
+    \begin{tikzpicture}
+      \node (A) {Assistant de preuve};
 
-  \begin{block}{Le noyau :}
-    \begin{itemize}
-      \item Vérifie la validité des preuves
-      \item Ne fait pas de raisonnement
-      \item \textbf{Inépendant du reste}
-    \end{itemize}
+      \node[below left=0.5cm of A] (T) {Tactiques};
+      \node[below=0cm of T,align=left,text width=4cm,font=\tiny] (TT) {
+        \begin{itemize}
+          \item Manipulent les preuves
+          \item Appliquées par l'utilisateur
+        \end{itemize}
+      };
+      \node[rounded corners, draw=black, fit=(T) (TT)] {};
+
+      \node[below right=0.5cm of A] (N)  {Noyau};
+      \node[below=0cm of N,align=left,text width=4cm,font=\tiny] (NN) {
+        \begin{itemize}
+          \item Vérifie la validité des preuves
+          \item Appelé automatiquement
+          \item \textbf{Ne fais pas de recherche}
+          \item \textbf{Indépendant du reste}
+        \end{itemize}
+      };
+      \node[rounded corners, draw=black, fit=(N) (NN)] {};
+
+      \node[rounded corners,draw=black,fit=(A) (T) (TT) (N) (NN), inner sep=10pt] {};
+    \end{tikzpicture}
+  \end{center}
+
+  \vfill
+
+  \pause
+  \begin{block}{}
+    Architecture simplifiée par rapport à Coq, mais retrouvée dans notre prototype
   \end{block}
 \end{frame}
 
@@ -163,8 +183,8 @@
     \begin{itemize}
       \item Logiciel à part entière
       \item Permet de résoudre des problèmes de décision
-      \item Reçois une formule logique et des contraintes
-      \item Renvoie \texttt{SAT} ou \texttt{UNSAT}
+      \item Reçoit une formule logique et des contraintes
+      \item Renvoie \texttt{SAT}\footnote{Il existe des valeurs telles que la formule est vraie}, \texttt{UNSAT}\footnote{La formule est toujours fausse} ou \texttt{UNKNOWN}
     \end{itemize}
   \end{block}
 
@@ -206,12 +226,23 @@
         \node[rectangle,fill=green!20] (c) [right=0 of and2] {$j' \leq j$};
         \node[rectangle,fill=green!20] (d) [right=0 of imply] {$t[i'] \leq t[j']$};
         \node[rectangle,fill=green!20,minimum width=1em,minimum height=1em,draw=black] (Green) [below=0.25 of Red] {};
-        \node (GreenText) [right=0 of Green] {Théorie};
+        \node (GreenText) [right=0 of Green] {Théories};
       }
     \end{tikzpicture}
   \end{block}
 \end{frame}
 
+\begin{frame}{Exemple : [1,2,3] est trié}
+  \begin{block}{$\lnot sorted([1,2,3],0,2)$}
+    \begin{itemize}
+      \item \alt<1>
+            {$\lnot \forall i',j'. i \leq i' \land i' \leq j' \land j' \leq j \Rightarrow t[i'] \leq t[j']$}
+            { $\lnot \forall i',j'. 0 \leq i' \land i' \leq j' \land j' \leq 2 \Rightarrow [1,2,3][i'] \leq [1,2,3][j']$
+            }
+      \item<3-> \texttt{UNSAT}
+    \end{itemize}
+  \end{block}
+\end{frame}
 
 \begin{frame}{Un problème de communication}
   \begin{alertblock}{Des logiques différentes :}
@@ -221,27 +252,48 @@
     \end{itemize}
   \end{alertblock}
 
-  \begin{exampleblock}{Du progrès, des tactiques de traduction :}
-    \begin{thebibliography}{10}
-      \beamertemplatearticlebibitems
-      \bibitem{DBLP:conf/cpp/Blot0CPKMV23}
-      L. D. de Prisque, C. Keller, V. Blot, \dots
-      \newblock Compositional Pre-processing for Automated Reasoning in Dependent Type Theory
-      \newblock CCP 2023.
-    \end{thebibliography}
-  \end{exampleblock}
+  \only<1>
+  {
+    \begin{columns}
+      \begin{column}{0.3\textwidth}
+        \begin{block}{\centering Immédiat :}
+          \centering
+          $\exists x, x + 0 = x$
+        \end{block}
+      \end{column}
+
+      \begin{column}{0.3\textwidth}
+        \begin{block}{\centering À traduire :}
+          \centering
+          $\exists R, \forall x, R(x,x)$
+        \end{block}
+      \end{column}
+    \end{columns}
+  }
+  \only<2>
+  {
+    \begin{exampleblock}{Du progrès, des tactiques de traduction :}
+      \begin{thebibliography}{10}
+        \beamertemplatearticlebibitems
+        \bibitem{DBLP:conf/cpp/Blot0CPKMV23}
+        L. D. de Prisque, C. Keller, V. Blot, \dots
+        \newblock Compositional Pre-processing for Automated Reasoning in Dependent Type Theory
+        \newblock CPP 2023.
+      \end{thebibliography}
+    \end{exampleblock}
+  }
 \end{frame}
 
 \subsection{Objectifs du stage}
 \begin{frame}{Objectifs du stage}
-  \begin{block}{Une traduction encore manuelle}
+  \begin{block}{Un ordre de traduction fixe}
     \begin{itemize}
-      \item Des tactiques pas toujours applicables
-      \item Une solution : laisser l'utilisateur les appliquer
+      \item Résultat d'éxpérimentation
+      \item Changer d'ordre en fonction du contexte ?
     \end{itemize}
   \end{block}
 
-  \begin{exampleblock}{Vers l'automatisation de la traduction}
+  \begin{exampleblock}{Vers un ordre automatiquement déterminé}
     \begin{itemize}
       \item Détecter les formules traduisibles
       \item Appliquer automatiquement les tactiques de traduction
@@ -249,24 +301,115 @@
   \end{exampleblock}
 \end{frame}
 
-\section{Contribution}
+\section{Réalisation}
 
-% \subsection{Un langage de spécification}
 
-% \begin{frame}{}
+% \begin{frame}{Détecter ? (10)}
+%   \begin{columns}
+%     \begin{column}{0.5\textwidth}
+%       \begin{block}{\centering En amont}
+%         \begin{itemize}
+%           \item Forme de la formule
+%           \item Permet d'éviter des applications
+%         \end{itemize}
+%       \end{block}
+%     \end{column}
+
+%     \begin{column}{0.5\textwidth}
+%       \begin{block}{\centering En aval}
+%         \begin{itemize}
+%           \item Résultat d'une tactique
+%           \item Permet de combiner des tactiques
+%         \end{itemize}
+%       \end{block}
+%     \end{column}
+%   \end{columns}
+
+%   \vfill
+
+%   \begin{alertblock}{}
+%     Insuffisant pour l'automatisation, besoin d'exprimer la position
+%   \end{alertblock}
 % \end{frame}
 
-% \subsection{Un interpréteur}
+\subsection{Un langage de spécification}
+\begin{frame}{Aperçu}
+  \begin{block}{\mintinline{ocaml}|TEq (TGoal, TSomeHyp)|}
+    Le but est-il égal à une hypothèse ?
+  \end{block}
 
-% \begin{frame}{}
+  \begin{block}{\mintinline{ocaml}|TIs (TSomeHyp, TAnd (TVar "A", TVar "B"))|}
+    Existe-t-il une hypothèse de la forme $A \land B$ ?
+  \end{block}
+\end{frame}
+
+\begin{frame}{Syntaxe}
+  \inputminted[fontsize=\small]{ocaml}{syntax_var.ml}
+  \vfill
+  \inputminted[fontsize=\small]{ocaml}{syntax_form.ml}
+  \vfill
+  \inputminted[fontsize=\small]{ocaml}{syntax.ml}
+\end{frame}
+
+\begin{frame}{Sémantique et interprétation}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Variables}
+        \begin{itemize}
+          \item \mintinline{ocaml}|TGoal|
+          \item \mintinline{ocaml}|TSomeHyp|
+        \end{itemize}
+      \end{block}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Formes}
+        \begin{itemize}
+          \item \mintinline{ocaml}|TVar|, \mintinline{ocaml}|TArr|, \mintinline{ocaml}|TAnd|, \mintinline{ocaml}|TOr|, \mintinline{ocaml}|TTop|, \mintinline{ocaml}|TBottom|
+          \item \mintinline{ocaml}|TDiscard|
+          \item \mintinline{ocaml}|TMetaVar|
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+  \begin{block}{Autres}
+    \begin{itemize}
+      \item \mintinline{ocaml}|TEq|
+      \item \mintinline{ocaml}|TIs|
+      \item \mintinline{ocaml}|TContains|
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\section{Conclusion}
+
+% \begin{frame}{Autres réalisations}
+%   \begin{block}{Quelques tactiques}
+%     \begin{itemize}
+%       \item Élimination de la conjonction
+%       \item Auto
+%       \item Commute
+%     \end{itemize}
+%   \end{block}
 % \end{frame}
 
-% \Autres contributions
+\begin{frame}
+  \begin{block}{Conclusion}
+    \begin{itemize}
+      \item Un langage de spécification
+      \item Une implémentation dans un prototype
+      \item Des perspectives
+    \end{itemize}
+  \end{block}
 
-\section*{Conclusion}
-
-\begin{frame}{Conclusion}
-  % Keep the summary *very short*.
+  \begin{block}{Perspectives}
+    \begin{itemize}
+      \item Travaux futurs de Louise
+      \item Implémentation dans Coq avec LTac2
+      \item Étudier l'ordre et son impact
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 \end{document}
