@@ -293,36 +293,6 @@
   \end{tabular}
 \end{frame}
 
-% Pourquoi c'est des objectifs importants ?
-% length nat [1; 2; 3] = 3
-
-% transfo equations :
-% H : forall A, length A [] = 0
-% H1 : forall A x xs, length A (x::xs) = length A xs + 1
-% -----------------------------
-% length nat [1; 2; 3] = 3
-
-% transfo polymorphisme :
-% H : length nat [] = 0
-% H1 : forall x xs, length nat (x::xs) = length nat xs + 1
-% -----------------------------
-% length nat [1; 2; 3] = 3
-
-% dans l'autre sens, transfo polymorphisme fait rien et on a seulement :
-
-% transfo equations :
-% H: forall A, length A [] = 0
-% H1 : forall A x xs, length A (x::xs) = length A xs + 1
-% ------------------------------
-% length nat [1; 2; 3] = 3
-
-% Ou encore, si utilisateur veut rajouter sa traduction, alors compliqué quand chaine fermée
-
-
-% Si exemple, transo equa viens ajouter du poly qui du coup déclenche transfo poly
-% Détécter que but contient forall A..., pour déclencher il faut exprimer que le but ...
-
-
 \section{Réalisation}
 
 \subsection{Un langage de spécification}
