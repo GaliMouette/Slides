@@ -52,23 +52,6 @@
   4 septembre 2023 : Soutenance
 }
 
-% Structuring a talk is a difficult task and the following structure
-% may not be suitable. Here are some rules that apply for this
-% solution:
-
-% - Exactly two or three sections (other than the summary).
-% - At *most* three subsections per section.
-% - Talk about 30s to 2min per frame. So there should be between about
-%   15 and 30 frames, all told.
-
-% - A conference audience is likely to know very little of what you
-%   are going to talk about. So *simplify*!
-% - In a 20min talk, getting the main ideas across is hard
-%   enough. Leave out details, even if it means being less precise than
-%   you think necessary.
-% - If you omit details that are vital to the proof/implementation,
-%   just say so once. Everybody will be happy with that.
-
 \begin{document}
 
 \begin{frame}[noframenumbering, plain]
@@ -136,7 +119,7 @@
       \node[below left=0.5cm of A] (T) {Tactiques};
       \node[below=0cm of T,align=left,text width=4cm,font=\tiny] (TT) {
         \begin{itemize}
-          \item Manipulent les preuves
+          \item Construit les preuves
           \item Appliquées par l'utilisateur
         \end{itemize}
       };
@@ -147,7 +130,7 @@
         \begin{itemize}
           \item Vérifie la validité des preuves
           \item Appelé automatiquement
-          \item \textbf{Ne fais pas de recherche}
+          \item \textbf{Ne fait pas de recherche}
           \item \textbf{Indépendant du reste}
         \end{itemize}
       };
@@ -288,12 +271,12 @@
 \begin{frame}{Objectifs du stage}
   \begin{block}{Un ordre de traduction fixe}
     \begin{itemize}
-      \item Résultat d'éxpérimentation
+      \item Résultat d'expérimentation
       \item Changer d'ordre en fonction du contexte ?
     \end{itemize}
   \end{block}
 
-  \begin{exampleblock}{Vers un ordre automatiquement déterminé}
+  \begin{exampleblock}{Vers un ordre déterminé à la volée}
     \begin{itemize}
       \item Détecter les formules traduisibles
       \item Appliquer automatiquement les tactiques de traduction
@@ -301,36 +284,46 @@
   \end{exampleblock}
 \end{frame}
 
+\begin{frame}{Limite d'un ordre fixe}
+  \begin{tabular}{p{0.46\textwidth}|p{0.46\textwidth}}
+    1. Traduction équations                           & 1. Traduction polymorphisme                    \\
+    \inputminted[fontsize=\tiny]{coq}{equations.v}    & \inputminted[fontsize=\tiny]{coq}{nothing.v}   \\
+    2. Traduction polymorphisme                       & 2. Traduction équations                        \\
+    \inputminted[fontsize=\tiny]{coq}{polymorphism.v} & \inputminted[fontsize=\tiny]{coq}{equations.v} \\
+  \end{tabular}
+\end{frame}
+
+% Pourquoi c'est des objectifs importants ?
+% length nat [1; 2; 3] = 3
+
+% transfo equations :
+% H : forall A, length A [] = 0
+% H1 : forall A x xs, length A (x::xs) = length A xs + 1
+% -----------------------------
+% length nat [1; 2; 3] = 3
+
+% transfo polymorphisme :
+% H : length nat [] = 0
+% H1 : forall x xs, length nat (x::xs) = length nat xs + 1
+% -----------------------------
+% length nat [1; 2; 3] = 3
+
+% dans l'autre sens, transfo polymorphisme fait rien et on a seulement :
+
+% transfo equations :
+% H: forall A, length A [] = 0
+% H1 : forall A x xs, length A (x::xs) = length A xs + 1
+% ------------------------------
+% length nat [1; 2; 3] = 3
+
+% Ou encore, si utilisateur veut rajouter sa traduction, alors compliqué quand chaine fermée
+
+
+% Si exemple, transo equa viens ajouter du poly qui du coup déclenche transfo poly
+% Détécter que but contient forall A..., pour déclencher il faut exprimer que le but ...
+
+
 \section{Réalisation}
-
-
-% \begin{frame}{Détecter ? (10)}
-%   \begin{columns}
-%     \begin{column}{0.5\textwidth}
-%       \begin{block}{\centering En amont}
-%         \begin{itemize}
-%           \item Forme de la formule
-%           \item Permet d'éviter des applications
-%         \end{itemize}
-%       \end{block}
-%     \end{column}
-
-%     \begin{column}{0.5\textwidth}
-%       \begin{block}{\centering En aval}
-%         \begin{itemize}
-%           \item Résultat d'une tactique
-%           \item Permet de combiner des tactiques
-%         \end{itemize}
-%       \end{block}
-%     \end{column}
-%   \end{columns}
-
-%   \vfill
-
-%   \begin{alertblock}{}
-%     Insuffisant pour l'automatisation, besoin d'exprimer la position
-%   \end{alertblock}
-% \end{frame}
 
 \subsection{Un langage de spécification}
 \begin{frame}{Aperçu}
@@ -384,29 +377,18 @@
 
 \section{Conclusion}
 
-% \begin{frame}{Autres réalisations}
-%   \begin{block}{Quelques tactiques}
-%     \begin{itemize}
-%       \item Élimination de la conjonction
-%       \item Auto
-%       \item Commute
-%     \end{itemize}
-%   \end{block}
-% \end{frame}
-
 \begin{frame}
   \begin{block}{Conclusion}
     \begin{itemize}
       \item Un langage de spécification
       \item Une implémentation dans un prototype
-      \item Des perspectives
     \end{itemize}
   \end{block}
 
   \begin{block}{Perspectives}
     \begin{itemize}
       \item Travaux futurs de Louise
-      \item Implémentation dans Coq avec LTac2
+      \item Implémentation dans Coq avec Ltac2
       \item Étudier l'ordre et son impact
     \end{itemize}
   \end{block}
